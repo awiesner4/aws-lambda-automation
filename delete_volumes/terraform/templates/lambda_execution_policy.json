@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:logs:${region}:${accountNumber}:*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:${region}:${accountNumber}:log-group:/aws/lambda/saas_delete_available_volumes:*"
+    },
+    {
+      "Sid": "AllowVolumeDeletion",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVolumes",
+        "ec2:DeleteVolume"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

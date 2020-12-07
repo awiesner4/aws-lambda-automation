@@ -1,0 +1,10 @@
+flowTemplate: lambda
+organization: development
+
+terraform:
+  version: "0.12.24"
+lambda:
+  rate: "6"
+  metric: "hours"
+  region: "us-east-2"
+  accountNumber: "327426148791"

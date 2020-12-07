@@ -1,0 +1,76 @@
+configuration:
+  runner:
+    events:
+      recordTaskInVars: true
+  dependencies:
+    - "mvn://com.walmartlabs.concord.plugins:terraform-task:1.22.0"
+    - "mvn://com.walmartlabs.concord.plugins:git:1.32.1"
+  arguments:
+    accessKey: "${crypto.exportAsString(projectInfo.orgName, 'aws_access_key_id', null)}"
+    secretKey: "${crypto.exportAsString(projectInfo.orgName, 'aws_secret_access_key', null)}"
+    lambda:
+      aws_access_key: ${accessKey}
+      aws_secret_key: ${secretKey}
+      rate: {{lambda.rate}}
+      metric: {{lambda.metric}}
+      region: {{lambda.region}}
+      accountNumber: {{lambda.accountNumber}}
+
+flows:
+  default:
+    - call: gitClone
+    - call: terraformApply
+      in:
+        directory: "delete_volumes"
+
+  destroy:
+    - call: gitClone
+    - call: terraformDestroy
+      in:
+        directory: "delete_volumes"
+
+  gitClone:
+    - task: git
+      in:
+        action: "clone"
+        url: "https://github.com/awiesner4/aws-lambda-automation.git"
+        baseBranch: "main"
+        out: "response"
+        ignoreErrors: true
+
+    - if: "${!response.ok}"
+      then:
+        - log: "Clone action failed: ${response.error}"
+
+  terraformApply:
+    - task: terraform
+      in:
+        debug: false
+        verbose: true
+        action: apply
+        toolVersion: "{{terraform.version}}"
+        dir: "aws-lambda-automation/delete_volumes/terraform"
+        extraVars: ${lambda}
+
+  terraformDestroy:
+    - task: terraform
+      in:
+        debug: false
+        action: plan
+        destroy: true
+        toolVersion: "{{terraform.version}}"
+        dir: "aws-lambda-automation/delete_volumes/terraform"
+        extraVars: ${lambda}
+
+    - task: terraform
+      in:
+        debug: true
+        verbose: true
+        action: apply
+        toolVersion: "{{terraform.version}}"
+        plan: ${result.planPath}
+        extraVars: ${lambda}
+        dir: "aws-lambda-automation/delete_volumes/terraform"
+      retry:
+        times: 3
+        delay: 30
