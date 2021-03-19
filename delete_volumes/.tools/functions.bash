@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 CURL="curl -L -sS -o /dev/null "
+CONCORD_API_TOKEN="$(sops exec-env ${PWD}/.tools/concord.infra.json 'echo $CONCORD_API_TOKEN')"
+CONCORD_URL="$(sops exec-env ${PWD}/.tools/concord.infra.json 'echo $CONCORD_URL')"
 
 concord_project() {
   # $1 = projectname
@@ -7,7 +9,7 @@ concord_project() {
   $CURL -H 'Content-Type: application/json' \
    -H "Authorization: ${CONCORD_API_TOKEN}" \
    -d "{ \"name\": \"$1\", \"acceptsRawPayload\": true, \"rawPayloadMode\" : \"EVERYONE\" }" \
-   http://${CONCORD_HOST_PORT}/api/v1/org/${ORGANIZATION}/project
+   ${CONCORD_URL}/api/v1/org/${ORGANIZATION}/project
 }
 
 concord_organization() {
@@ -16,5 +18,5 @@ concord_organization() {
   $CURL -H 'Content-Type: application/json' \
    -H "Authorization: ${CONCORD_API_TOKEN}" \
    -d "{ \"name\": \"$1\" }" \
-   http://${CONCORD_HOST_PORT}/api/v1/org
+   ${CONCORD_URL}/api/v1/org
 }

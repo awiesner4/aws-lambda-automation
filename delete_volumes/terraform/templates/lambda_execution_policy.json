@@ -5,7 +5,7 @@
       "Sid": "VisualEditor0",
       "Effect": "Allow",
       "Action": "logs:CreateLogGroup",
-      "Resource": "arn:aws:logs:${region}:${accountNumber}:*"
+      "Resource": "arn:aws:logs:*:${accountNumber}:*"
     },
     {
       "Sid": "VisualEditor1",
@@ -14,7 +14,7 @@
         "logs:CreateLogStream",
         "logs:PutLogEvents"
       ],
-      "Resource": "arn:aws:logs:${region}:${accountNumber}:log-group:/aws/lambda/saas_delete_available_volumes:*"
+      "Resource": "arn:aws:logs:*:${accountNumber}:log-group:/aws/lambda/saas_delete_available_volumes:*"
     },
     {
       "Sid": "AllowVolumeDeletion",

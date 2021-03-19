@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: .*.tools/concord.infra.json*
+    kms: "arn:aws:kms:us-east-2:327426148791:key/228ec284-adff-4b6d-8e1b-d1b9f3a8e632,arn:aws:kms:us-west-2:327426148791:key/adade6ea-f755-4ca0-9df4-14fe63f47a54"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "${HOME}/.concord/default.infra.ck8s"
+#source "${HOME}/.concord/default.infra.ck8s"
 source "${PWD}/.tools/functions.bash"
 projectName="delete-available-volumes-lambda"
 entryPoint="-F entryPoint=default"

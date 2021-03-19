@@ -6,6 +6,8 @@ configuration:
     - "mvn://com.walmartlabs.concord.plugins:terraform-task:1.22.0"
     - "mvn://com.walmartlabs.concord.plugins:git:1.32.1"
   arguments:
+    gitUrl: "https://github.com/awiesner4/aws-lambda-automation.git"
+    gitBranch: "al/tf-updates"
     accessKey: "${crypto.exportAsString(projectInfo.orgName, 'aws_access_key_id', null)}"
     secretKey: "${crypto.exportAsString(projectInfo.orgName, 'aws_secret_access_key', null)}"
     lambda:
@@ -15,6 +17,7 @@ configuration:
       metric: {{lambda.metric}}
       region: {{lambda.region}}
       accountNumber: {{lambda.accountNumber}}
+      target_regions: {{lambda.target_regions}}
 
 flows:
   default:
@@ -33,8 +36,8 @@ flows:
     - task: git
       in:
         action: "clone"
-        url: "https://github.com/awiesner4/aws-lambda-automation.git"
-        baseBranch: "main"
+        url: ${gitUrl}
+        baseBranch: ${gitBranch}
         out: "response"
         ignoreErrors: true
 

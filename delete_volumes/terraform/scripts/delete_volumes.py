@@ -4,17 +4,16 @@ import os
 import logging
 
 
-def lambda_handler(event, context):
-    client = boto3.client('ec2', region_name='us-east-2')
+def delete_volumes(aws_client):
     print("Gathering list of available EBS volumes")
-    response = client.describe_volumes(
+    response = aws_client.describe_volumes(
         Filters=[
             {
                 'Name': 'status',
                 'Values': [
                     'available'
                 ]
-             },
+            },
         ],
     )
 
@@ -24,10 +23,18 @@ def lambda_handler(event, context):
         print("Starting deletion of available volumes")
         for volume in response['Volumes']:
             print(f"Deleting volume: {volume['VolumeId']}")
-            resp = client.delete_volume(
+            resp = aws_client.delete_volume(
                 VolumeId=volume['VolumeId']
             )
             print(resp)
+
+
+def lambda_handler(event, context):
+    regions = os.environ['TARGET_REGIONS'].replace(" ", "").split(",")
+
+    for region in regions:
+        client = boto3.client('ec2', region_name=region)
+        delete_volumes(client)
 
 
 if __name__ == "__main__":
