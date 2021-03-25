@@ -1,0 +1,12 @@
+flowTemplate: lambda
+organization: starburst-dev-customer2
+project: delete-available-volumes-lambda
+
+terraform:
+  version: "0.12.24"
+lambda:
+  rate: "6"
+  metric: "hours"
+  region: "us-east-2"
+  accountNumber: "564350841730"
+  target_regions: "us-east-1, us-east-2, us-west-1, us-west-2"

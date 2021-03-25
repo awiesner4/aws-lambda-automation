@@ -57,3 +57,11 @@ resource "aws_cloudwatch_event_target" "delete_available_volumes_lambda" {
   arn = aws_lambda_function.delete_available_volumes.arn
   rule = aws_cloudwatch_event_rule.delete_available_volumes.name
 }
+
+resource "aws_lambda_permission" "allow_cloudwatch" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_available_volumes.function_name
+  principal = "events.amazonaws.com"
+  source_arn = aws_cloudwatch_event_rule.delete_available_volumes.arn
+}
